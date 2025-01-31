@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Download, Trash2, File } from "lucide-react";
+import { ChevronDown, ChevronUp, Download, Trash2, File, FileSpreadsheet, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,8 +16,13 @@ interface Document {
 interface Extraction {
   id: string;
   type: string;
-  status: "completed" | "processing" | "failed";
+  status: "completed" | "processing" | "failed" | "draft";
   date: string;
+  fileType: "excel" | "pdf";
+  property: {
+    id: string;
+    name: string;
+  };
 }
 
 const documents: Document[] = [
@@ -32,12 +37,22 @@ const documents: Document[] = [
         type: "Tenant Data",
         status: "completed",
         date: "2024-01-15",
+        fileType: "excel",
+        property: {
+          id: "p1",
+          name: "Sunset Plaza"
+        }
       },
       {
         id: "e2",
         type: "Revenue Analysis",
-        status: "completed",
+        status: "draft",
         date: "2024-01-15",
+        fileType: "pdf",
+        property: {
+          id: "p1",
+          name: "Sunset Plaza"
+        }
       },
     ],
   },
@@ -50,8 +65,13 @@ const documents: Document[] = [
       {
         id: "e3",
         type: "Expense Analysis",
-        status: "completed",
+        status: "processing",
         date: "2024-01-14",
+        fileType: "excel",
+        property: {
+          id: "p2",
+          name: "Downtown Heights"
+        }
       },
     ],
   },
@@ -100,6 +120,29 @@ export function FileRepository() {
       variant: "destructive",
     });
     setSelectedDocs([]);
+  };
+
+  const getStatusColor = (status: Extraction["status"]) => {
+    switch (status) {
+      case "completed":
+        return "bg-green-50 text-green-700";
+      case "processing":
+        return "bg-yellow-50 text-yellow-700";
+      case "failed":
+        return "bg-red-50 text-red-700";
+      case "draft":
+        return "bg-gray-50 text-gray-700";
+      default:
+        return "bg-gray-50 text-gray-700";
+    }
+  };
+
+  const FileTypeIcon = ({ type }: { type: "excel" | "pdf" }) => {
+    return type === "excel" ? (
+      <FileSpreadsheet className="w-4 h-4 text-green-600" />
+    ) : (
+      <FileText className="w-4 h-4 text-red-600" />
+    );
   };
 
   return (
@@ -209,22 +252,40 @@ export function FileRepository() {
                               key={extraction.id}
                               className="flex items-center justify-between bg-white p-3 rounded-md border"
                             >
-                              <div className="flex items-center gap-3">
-                                <span className="text-sm font-medium">
-                                  {extraction.type}
-                                </span>
-                                <span
-                                  className={cn(
-                                    "px-2 py-1 rounded-full text-xs",
-                                    extraction.status === "completed"
-                                      ? "bg-green-50 text-green-700"
-                                      : extraction.status === "processing"
-                                      ? "bg-yellow-50 text-yellow-700"
-                                      : "bg-red-50 text-red-700"
-                                  )}
-                                >
-                                  {extraction.status}
-                                </span>
+                              <div className="flex items-center gap-4">
+                                <FileTypeIcon type={extraction.fileType} />
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-sm font-medium">
+                                      {extraction.type}
+                                    </span>
+                                    <span
+                                      className={cn(
+                                        "px-2 py-1 rounded-full text-xs",
+                                        getStatusColor(extraction.status)
+                                      )}
+                                    >
+                                      {extraction.status}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-500">
+                                      Property:
+                                    </span>
+                                    <Button
+                                      variant="link"
+                                      className="text-xs p-0 h-auto font-medium"
+                                      onClick={() => {
+                                        toast({
+                                          title: "Navigation",
+                                          description: `Navigating to ${extraction.property.name}`,
+                                        });
+                                      }}
+                                    >
+                                      {extraction.property.name}
+                                    </Button>
+                                  </div>
+                                </div>
                               </div>
                               <span className="text-sm text-gray-500">
                                 {new Date(extraction.date).toLocaleDateString()}
