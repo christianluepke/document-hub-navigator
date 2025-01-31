@@ -1,8 +1,11 @@
-import { FileSpreadsheet, FileText } from "lucide-react";
+import { FileSpreadsheet, FileText, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { type Extraction } from "./types";
+import { type Extraction, type ExtractionUpdate } from "./types";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface ExtractionsPanelProps {
   extractions: Extraction[];
@@ -10,6 +13,11 @@ interface ExtractionsPanelProps {
 
 export function ExtractionsPanel({ extractions }: ExtractionsPanelProps) {
   const { toast } = useToast();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<ExtractionUpdate>({
+    type: "",
+    property: { id: "", name: "" }
+  });
 
   const getStatusColor = (status: Extraction["status"]) => {
     switch (status) {
@@ -34,6 +42,28 @@ export function ExtractionsPanel({ extractions }: ExtractionsPanelProps) {
     );
   };
 
+  const handleEdit = (extraction: Extraction) => {
+    setEditingId(extraction.id);
+    setEditForm({
+      type: extraction.type,
+      property: { ...extraction.property }
+    });
+  };
+
+  const handleSave = (extractionId: string) => {
+    // In a real app, this would make an API call to update the extraction
+    toast({
+      title: "Changes saved",
+      description: "The extraction has been updated successfully"
+    });
+    setEditingId(null);
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+    setEditForm({ type: "", property: { id: "", name: "" } });
+  };
+
   return (
     <div className="pl-12">
       <h4 className="text-sm font-medium mb-3">Extractions</h4>
@@ -43,40 +73,95 @@ export function ExtractionsPanel({ extractions }: ExtractionsPanelProps) {
             key={extraction.id}
             className="flex items-center justify-between bg-white p-3 rounded-md border"
           >
-            <div className="flex items-center gap-4">
-              <FileTypeIcon type={extraction.fileType} />
-              <div className="space-y-1">
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium">{extraction.type}</span>
-                  <span
-                    className={cn(
-                      "px-2 py-1 rounded-full text-xs",
-                      getStatusColor(extraction.status)
-                    )}
-                  >
-                    {extraction.status}
-                  </span>
+            {editingId === extraction.id ? (
+              <div className="flex-1 space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="type">Type</Label>
+                  <Input
+                    id="type"
+                    value={editForm.type}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, type: e.target.value })
+                    }
+                  />
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500">Property:</span>
+                <div className="space-y-2">
+                  <Label htmlFor="property">Property Name</Label>
+                  <Input
+                    id="property"
+                    value={editForm.property.name}
+                    onChange={(e) =>
+                      setEditForm({
+                        ...editForm,
+                        property: { ...editForm.property, name: e.target.value }
+                      })
+                    }
+                  />
+                </div>
+                <div className="flex gap-2">
                   <Button
-                    variant="link"
-                    className="text-xs p-0 h-auto font-medium"
-                    onClick={() => {
-                      toast({
-                        title: "Navigation",
-                        description: `Navigating to ${extraction.property.name}`,
-                      });
-                    }}
+                    variant="default"
+                    size="sm"
+                    onClick={() => handleSave(extraction.id)}
                   >
-                    {extraction.property.name}
+                    Save
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCancel}
+                  >
+                    Cancel
                   </Button>
                 </div>
               </div>
-            </div>
-            <span className="text-sm text-gray-500">
-              {new Date(extraction.date).toLocaleDateString()}
-            </span>
+            ) : (
+              <>
+                <div className="flex items-center gap-4">
+                  <FileTypeIcon type={extraction.fileType} />
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-medium">{extraction.type}</span>
+                      <span
+                        className={cn(
+                          "px-2 py-1 rounded-full text-xs",
+                          getStatusColor(extraction.status)
+                        )}
+                      >
+                        {extraction.status}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500">Property:</span>
+                      <Button
+                        variant="link"
+                        className="text-xs p-0 h-auto font-medium"
+                        onClick={() => {
+                          toast({
+                            title: "Navigation",
+                            description: `Navigating to ${extraction.property.name}`,
+                          });
+                        }}
+                      >
+                        {extraction.property.name}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-gray-500">
+                    {new Date(extraction.date).toLocaleDateString()}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleEdit(extraction)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         ))}
       </div>

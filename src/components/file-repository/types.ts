@@ -17,3 +17,11 @@ export interface Extraction {
     name: string;
   };
 }
+
+export interface ExtractionUpdate {
+  type: string;
+  property: {
+    id: string;
+    name: string;
+  };
+}
