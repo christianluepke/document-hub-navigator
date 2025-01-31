@@ -4,6 +4,12 @@ export interface Document {
   type: "Rent Roll" | "Operating Statement";
   dateUploaded: string;
   extractions: Extraction[];
+  uploadedBy: {
+    id: string;
+    name: string;
+    email: string;
+    avatarUrl?: string;
+  };
 }
 
 export interface Extraction {
@@ -15,6 +21,20 @@ export interface Extraction {
   property: {
     id: string;
     name: string;
+  };
+  project?: {
+    id: string;
+    name: string;
+  };
+  portfolio?: {
+    id: string;
+    name: string;
+  };
+  uploadedBy: {
+    id: string;
+    name: string;
+    email: string;
+    avatarUrl?: string;
   };
 }
 

@@ -2,6 +2,7 @@ import { ChevronDown, ChevronUp, File } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { type Document } from "./types";
 import { ExtractionsPanel } from "./ExtractionsPanel";
 
@@ -50,6 +51,15 @@ export function DocumentRow({
             {document.type}
           </span>
         </td>
+        <td className="p-4">
+          <div className="flex items-center gap-2">
+            <Avatar className="h-6 w-6">
+              <AvatarImage src={document.uploadedBy.avatarUrl} />
+              <AvatarFallback>{document.uploadedBy.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <span className="text-sm text-gray-600">{document.uploadedBy.name}</span>
+          </div>
+        </td>
         <td className="p-4 text-sm text-gray-600">
           {new Date(document.dateUploaded).toLocaleDateString()}
         </td>
@@ -70,7 +80,7 @@ export function DocumentRow({
       </tr>
       {isExpanded && (
         <tr className="bg-gray-50 animate-slide-down">
-          <td colSpan={5} className="p-4">
+          <td colSpan={6} className="p-4">
             <ExtractionsPanel extractions={document.extractions} />
           </td>
         </tr>

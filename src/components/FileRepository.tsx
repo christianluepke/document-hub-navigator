@@ -11,6 +11,12 @@ const documents: Document[] = [
     name: "Q4_2023_RentRoll.pdf",
     type: "Rent Roll",
     dateUploaded: "2024-01-15",
+    uploadedBy: {
+      id: "u1",
+      name: "John Doe",
+      email: "john@example.com",
+      avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=John"
+    },
     extractions: [
       {
         id: "e1",
@@ -21,6 +27,20 @@ const documents: Document[] = [
         property: {
           id: "p1",
           name: "Sunset Plaza"
+        },
+        project: {
+          id: "pr1",
+          name: "West Coast Properties"
+        },
+        portfolio: {
+          id: "pf1",
+          name: "Commercial Real Estate"
+        },
+        uploadedBy: {
+          id: "u2",
+          name: "Jane Smith",
+          email: "jane@example.com",
+          avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane"
         }
       },
       {
@@ -32,6 +52,20 @@ const documents: Document[] = [
         property: {
           id: "p1",
           name: "Sunset Plaza"
+        },
+        project: {
+          id: "pr1",
+          name: "West Coast Properties"
+        },
+        portfolio: {
+          id: "pf1",
+          name: "Commercial Real Estate"
+        },
+        uploadedBy: {
+          id: "u1",
+          name: "John Doe",
+          email: "john@example.com",
+          avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=John"
         }
       },
     ],
@@ -41,6 +75,12 @@ const documents: Document[] = [
     name: "2023_OperatingStatement.pdf",
     type: "Operating Statement",
     dateUploaded: "2024-01-14",
+    uploadedBy: {
+      id: "u2",
+      name: "Jane Smith",
+      email: "jane@example.com",
+      avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane"
+    },
     extractions: [
       {
         id: "e3",
@@ -51,6 +91,20 @@ const documents: Document[] = [
         property: {
           id: "p2",
           name: "Downtown Heights"
+        },
+        project: {
+          id: "pr2",
+          name: "City Center Initiative"
+        },
+        portfolio: {
+          id: "pf2",
+          name: "Urban Development"
+        },
+        uploadedBy: {
+          id: "u2",
+          name: "Jane Smith",
+          email: "jane@example.com",
+          avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane"
         }
       },
     ],

@@ -6,6 +6,7 @@ import { type Extraction, type ExtractionUpdate } from "./types";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ExtractionsPanelProps {
   extractions: Extraction[];
@@ -51,7 +52,6 @@ export function ExtractionsPanel({ extractions }: ExtractionsPanelProps) {
   };
 
   const handleSave = (extractionId: string) => {
-    // In a real app, this would make an API call to update the extraction
     toast({
       title: "Changes saved",
       description: "The extraction has been updated successfully"
@@ -62,6 +62,13 @@ export function ExtractionsPanel({ extractions }: ExtractionsPanelProps) {
   const handleCancel = () => {
     setEditingId(null);
     setEditForm({ type: "", property: { id: "", name: "" } });
+  };
+
+  const handleNavigate = (type: string, name: string) => {
+    toast({
+      title: "Navigation",
+      description: `Navigating to ${type}: ${name}`,
+    });
   };
 
   return (
@@ -131,24 +138,52 @@ export function ExtractionsPanel({ extractions }: ExtractionsPanelProps) {
                         {extraction.status}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-500">Property:</span>
-                      <Button
-                        variant="link"
-                        className="text-xs p-0 h-auto font-medium"
-                        onClick={() => {
-                          toast({
-                            title: "Navigation",
-                            description: `Navigating to ${extraction.property.name}`,
-                          });
-                        }}
-                      >
-                        {extraction.property.name}
-                      </Button>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500">Property:</span>
+                        <Button
+                          variant="link"
+                          className="text-xs p-0 h-auto font-medium"
+                          onClick={() => handleNavigate('property', extraction.property.name)}
+                        >
+                          {extraction.property.name}
+                        </Button>
+                      </div>
+                      {extraction.project && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-500">Project:</span>
+                          <Button
+                            variant="link"
+                            className="text-xs p-0 h-auto font-medium"
+                            onClick={() => handleNavigate('project', extraction.project!.name)}
+                          >
+                            {extraction.project.name}
+                          </Button>
+                        </div>
+                      )}
+                      {extraction.portfolio && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-500">Portfolio:</span>
+                          <Button
+                            variant="link"
+                            className="text-xs p-0 h-auto font-medium"
+                            onClick={() => handleNavigate('portfolio', extraction.portfolio!.name)}
+                          >
+                            {extraction.portfolio.name}
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage src={extraction.uploadedBy.avatarUrl} />
+                      <AvatarFallback>{extraction.uploadedBy.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm text-gray-600">{extraction.uploadedBy.name}</span>
+                  </div>
                   <span className="text-sm text-gray-500">
                     {new Date(extraction.date).toLocaleDateString()}
                   </span>
