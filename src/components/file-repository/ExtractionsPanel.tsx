@@ -6,6 +6,7 @@ import { Edit2, FileSpreadsheet, File, Save, X } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 interface ExtractionsPanelProps {
   extractions: Extraction[];
@@ -26,11 +27,38 @@ export function ExtractionsPanel({ extractions }: ExtractionsPanelProps) {
 
   const formatProperties = (properties: { id: string; name: string }[]) => {
     if (properties.length <= 3) {
-      return properties.map(p => p.name).join(", ");
+      return properties.map((p, index) => (
+        <>
+          <Link
+            to={`/properties/${p.id}`}
+            className="text-blue-600 hover:underline"
+            key={p.id}
+          >
+            {p.name}
+          </Link>
+          {index < properties.length - 1 ? ", " : ""}
+        </>
+      ));
     }
     const displayed = properties.slice(0, 3);
     const remaining = properties.length - 3;
-    return `${displayed.map(p => p.name).join(", ")} + ${remaining} Others`;
+    return (
+      <>
+        {displayed.map((p, index) => (
+          <>
+            <Link
+              to={`/properties/${p.id}`}
+              className="text-blue-600 hover:underline"
+              key={p.id}
+            >
+              {p.name}
+            </Link>
+            {index < displayed.length - 1 ? ", " : ""}
+          </>
+        ))}
+        {` + ${remaining} Others`}
+      </>
+    );
   };
 
   return (
@@ -97,12 +125,24 @@ export function ExtractionsPanel({ extractions }: ExtractionsPanelProps) {
                 </div>
                 {extraction.project && (
                   <div className="text-sm text-gray-500">
-                    Project: {extraction.project.name}
+                    Project:{" "}
+                    <Link
+                      to={`/projects/${extraction.project.id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {extraction.project.name}
+                    </Link>
                   </div>
                 )}
                 {extraction.portfolio && (
                   <div className="text-sm text-gray-500">
-                    Portfolio: {extraction.portfolio.name}
+                    Portfolio:{" "}
+                    <Link
+                      to={`/portfolios/${extraction.portfolio.id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {extraction.portfolio.name}
+                    </Link>
                   </div>
                 )}
               </div>
