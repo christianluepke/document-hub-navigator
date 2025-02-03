@@ -4,6 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { BulkActions } from "./file-repository/BulkActions";
 import { DocumentRow } from "./file-repository/DocumentRow";
 import { UploadDialog } from "./file-repository/UploadDialog";
+import { FilterBar, type Filters } from "./file-repository/FilterBar";
 import { type Document } from "./file-repository/types";
 
 const documents: Document[] = [
@@ -133,13 +134,50 @@ const documents: Document[] = [
 export function FileRepository() {
   const [selectedDocs, setSelectedDocs] = useState<string[]>([]);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
+  const [filters, setFilters] = useState<Filters>({});
   const { toast } = useToast();
 
+  const filteredDocuments = documents.filter((doc) => {
+    if (filters.submitter && doc.uploadedBy.name !== filters.submitter) {
+      return false;
+    }
+
+    if (filters.documentType) {
+      const hasDocType = doc.extractions.some(
+        (ext) => ext.type === filters.documentType
+      );
+      if (!hasDocType) return false;
+    }
+
+    if (filters.property) {
+      const hasProperty = doc.extractions.some((ext) =>
+        ext.properties.some((prop) => prop.name === filters.property)
+      );
+      if (!hasProperty) return false;
+    }
+
+    if (filters.project) {
+      const hasProject = doc.extractions.some(
+        (ext) => ext.project?.name === filters.project
+      );
+      if (!hasProject) return false;
+    }
+
+    if (filters.portfolio) {
+      const hasPortfolio = doc.extractions.some(
+        (ext) => ext.portfolio?.name === filters.portfolio
+      );
+      if (!hasPortfolio) return false;
+    }
+
+    return true;
+  });
+
   const toggleSelectAll = () => {
-    if (selectedDocs.length === documents.length) {
+    if (selectedDocs.length === filteredDocuments.length) {
       setSelectedDocs([]);
     } else {
-      setSelectedDocs(documents.map((doc) => doc.id));
+      setSelectedDocs(filteredDocuments.map((doc) => doc.id));
     }
   };
 
@@ -185,13 +223,15 @@ export function FileRepository() {
         </div>
       </div>
 
+      <FilterBar documents={documents} onFiltersChange={setFilters} />
+
       <div className="bg-white rounded-lg shadow-sm border">
         <table className="w-full">
           <thead>
             <tr className="border-b">
               <th className="p-4 text-left">
                 <Checkbox
-                  checked={selectedDocs.length === documents.length}
+                  checked={selectedDocs.length === filteredDocuments.length}
                   onCheckedChange={toggleSelectAll}
                 />
               </th>
@@ -210,7 +250,7 @@ export function FileRepository() {
             </tr>
           </thead>
           <tbody>
-            {documents.map((doc) => (
+            {filteredDocuments.map((doc) => (
               <DocumentRow
                 key={doc.id}
                 document={doc}
