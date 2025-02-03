@@ -21,7 +21,7 @@ const documents: Document[] = [
     extractions: [
       {
         id: "e1",
-        type: "Tenant Data",
+        type: "Rent Roll",
         status: "completed",
         date: "2024-01-15",
         fileType: "excel",
@@ -60,7 +60,7 @@ const documents: Document[] = [
       },
       {
         id: "e2",
-        type: "Revenue Analysis",
+        type: "Operating Statement",
         status: "draft",
         date: "2024-01-15",
         fileType: "pdf",
@@ -101,7 +101,7 @@ const documents: Document[] = [
     extractions: [
       {
         id: "e3",
-        type: "Expense Analysis",
+        type: "Operating Statement",
         status: "processing",
         date: "2024-01-14",
         fileType: "excel",
