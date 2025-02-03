@@ -11,7 +11,6 @@ const documents: Document[] = [
   {
     id: "1",
     name: "Q4_2023_RentRoll.pdf",
-    type: "Rent Roll",
     dateUploaded: "2024-01-15",
     uploadedBy: {
       id: "u1",
@@ -91,7 +90,6 @@ const documents: Document[] = [
   {
     id: "2",
     name: "2023_OperatingStatement.pdf",
-    type: "Operating Statement",
     dateUploaded: "2024-01-14",
     uploadedBy: {
       id: "u2",
