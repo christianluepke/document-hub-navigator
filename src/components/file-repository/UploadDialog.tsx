@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -28,21 +29,38 @@ import { useState } from "react";
 
 interface UploadFormData {
   documentType: "Rent Roll" | "Operating Statement";
-  file: FileList;
 }
 
 export function UploadDialog() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const form = useForm<UploadFormData>();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const onSubmit = (data: UploadFormData) => {
+    if (!selectedFile) {
+      toast({
+        title: "Error",
+        description: "Please select a file to upload",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Here you would typically handle the file upload to your backend
     toast({
       title: "Document uploaded",
-      description: `Successfully uploaded ${data.documentType}`,
+      description: `Successfully uploaded ${selectedFile.name}`,
     });
     setOpen(false);
+    setSelectedFile(null);
+    form.reset();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
   };
 
   return (
@@ -56,6 +74,9 @@ export function UploadDialog() {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Upload Document</DialogTitle>
+          <DialogDescription>
+            Upload a new document and specify its type
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -84,22 +105,16 @@ export function UploadDialog() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="file"
-              render={({ field: { onChange, ...field } }) => (
-                <FormItem>
-                  <FormLabel>File</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      onChange={(e) => onChange(e.target.files)}
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormLabel>File</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  onChange={handleFileChange}
+                  accept=".pdf,.xlsx,.xls"
+                />
+              </FormControl>
+            </FormItem>
             <Button type="submit" className="w-full">
               Upload
             </Button>

@@ -1,7 +1,6 @@
 export interface Document {
   id: string;
   name: string;
-  type: "Rent Roll" | "Operating Statement";
   dateUploaded: string;
   extractions: Extraction[];
   uploadedBy: {
@@ -14,7 +13,7 @@ export interface Document {
 
 export interface Extraction {
   id: string;
-  type: string;
+  type: "Rent Roll" | "Operating Statement";
   status: "completed" | "processing" | "failed" | "draft";
   date: string;
   fileType: "excel" | "pdf";

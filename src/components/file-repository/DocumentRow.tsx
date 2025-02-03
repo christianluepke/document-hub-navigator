@@ -40,18 +40,6 @@ export function DocumentRow({
           </div>
         </td>
         <td className="p-4">
-          <span
-            className={cn(
-              "px-3 py-1 rounded-full text-xs font-medium",
-              document.type === "Rent Roll"
-                ? "bg-blue-50 text-blue-700"
-                : "bg-purple-50 text-purple-700"
-            )}
-          >
-            {document.type}
-          </span>
-        </td>
-        <td className="p-4">
           <div className="flex items-center gap-2">
             <Avatar className="h-6 w-6">
               <AvatarImage src={document.uploadedBy.avatarUrl} />

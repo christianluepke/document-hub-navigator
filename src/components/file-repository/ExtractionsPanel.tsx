@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { type Extraction } from "./types";
 import { Badge } from "@/components/ui/badge";
-import { Edit2, Save, X } from "lucide-react";
+import { Edit2, FileSpreadsheet, File, Save, X } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 interface ExtractionsPanelProps {
   extractions: Extraction[];
@@ -78,6 +79,17 @@ export function ExtractionsPanel({ extractions }: ExtractionsPanelProps) {
                     >
                       <Edit2 className="h-4 w-4" />
                     </Button>
+                    {extraction.fileType === 'excel' ? (
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        <FileSpreadsheet className="h-3 w-3 mr-1" />
+                        Excel
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                        <File className="h-3 w-3 mr-1" />
+                        PDF
+                      </Badge>
+                    )}
                   </div>
                 )}
                 <div className="text-sm text-gray-500">
