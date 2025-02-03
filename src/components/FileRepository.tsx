@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { BulkActions } from "./file-repository/BulkActions";
 import { DocumentRow } from "./file-repository/DocumentRow";
+import { UploadDialog } from "./file-repository/UploadDialog";
 import { type Document } from "./file-repository/types";
 
 const documents: Document[] = [
@@ -24,10 +25,24 @@ const documents: Document[] = [
         status: "completed",
         date: "2024-01-15",
         fileType: "excel",
-        property: {
-          id: "p1",
-          name: "Sunset Plaza"
-        },
+        properties: [
+          {
+            id: "p1",
+            name: "Sunset Plaza"
+          },
+          {
+            id: "p2",
+            name: "Downtown Heights"
+          },
+          {
+            id: "p3",
+            name: "Riverside Mall"
+          },
+          {
+            id: "p4",
+            name: "Ocean View Complex"
+          }
+        ],
         project: {
           id: "pr1",
           name: "West Coast Properties"
@@ -49,10 +64,12 @@ const documents: Document[] = [
         status: "draft",
         date: "2024-01-15",
         fileType: "pdf",
-        property: {
-          id: "p1",
-          name: "Sunset Plaza"
-        },
+        properties: [
+          {
+            id: "p1",
+            name: "Sunset Plaza"
+          }
+        ],
         project: {
           id: "pr1",
           name: "West Coast Properties"
@@ -88,10 +105,12 @@ const documents: Document[] = [
         status: "processing",
         date: "2024-01-14",
         fileType: "excel",
-        property: {
-          id: "p2",
-          name: "Downtown Heights"
-        },
+        properties: [
+          {
+            id: "p2",
+            name: "Downtown Heights"
+          }
+        ],
         project: {
           id: "pr2",
           name: "City Center Initiative"
@@ -156,11 +175,14 @@ export function FileRepository() {
     <div className="w-full max-w-6xl mx-auto p-6 space-y-6 animate-fade-in">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Document Repository</h1>
-        <BulkActions
-          selectedCount={selectedDocs.length}
-          onDownload={handleBulkDownload}
-          onDelete={handleBulkDelete}
-        />
+        <div className="flex gap-4">
+          <UploadDialog />
+          <BulkActions
+            selectedCount={selectedDocs.length}
+            onDownload={handleBulkDownload}
+            onDelete={handleBulkDelete}
+          />
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border">

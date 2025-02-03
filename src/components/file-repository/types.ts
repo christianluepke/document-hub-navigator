@@ -18,10 +18,10 @@ export interface Extraction {
   status: "completed" | "processing" | "failed" | "draft";
   date: string;
   fileType: "excel" | "pdf";
-  property: {
+  properties: {
     id: string;
     name: string;
-  };
+  }[];
   project?: {
     id: string;
     name: string;
@@ -40,8 +40,8 @@ export interface Extraction {
 
 export interface ExtractionUpdate {
   type: string;
-  property: {
+  properties: {
     id: string;
     name: string;
-  };
+  }[];
 }
