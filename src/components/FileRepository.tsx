@@ -127,6 +127,212 @@ const documents: Document[] = [
       },
     ],
   },
+  {
+    id: "3",
+    name: "Q3_2023_RentRoll.pdf",
+    dateUploaded: "2023-12-15",
+    uploadedBy: {
+      id: "u3",
+      name: "Robert Wilson",
+      email: "robert@example.com",
+      avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert"
+    },
+    extractions: [
+      {
+        id: "e4",
+        type: "Rent Roll",
+        status: "completed",
+        date: "2023-12-15",
+        fileType: "excel",
+        properties: [
+          {
+            id: "p5",
+            name: "Mountain View Offices"
+          }
+        ],
+        project: {
+          id: "pr3",
+          name: "Mountain Development"
+        },
+        portfolio: {
+          id: "pf3",
+          name: "Office Properties"
+        },
+        uploadedBy: {
+          id: "u3",
+          name: "Robert Wilson",
+          email: "robert@example.com",
+          avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert"
+        }
+      }
+    ]
+  },
+  {
+    id: "4",
+    name: "Q2_2023_RentRoll.pdf",
+    dateUploaded: "2023-09-15",
+    uploadedBy: {
+      id: "u4",
+      name: "Sarah Brown",
+      email: "sarah@example.com",
+      avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah"
+    },
+    extractions: [
+      {
+        id: "e5",
+        type: "Operating Statement",
+        status: "failed",
+        date: "2023-09-15",
+        fileType: "pdf",
+        properties: [
+          {
+            id: "p6",
+            name: "Valley Shopping Center"
+          }
+        ],
+        project: {
+          id: "pr4",
+          name: "Retail Portfolio Expansion"
+        },
+        portfolio: {
+          id: "pf4",
+          name: "Retail Properties"
+        },
+        uploadedBy: {
+          id: "u4",
+          name: "Sarah Brown",
+          email: "sarah@example.com",
+          avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah"
+        }
+      }
+    ]
+  },
+  {
+    id: "5",
+    name: "2023_Q1_OperatingStatement.pdf",
+    dateUploaded: "2023-06-15",
+    uploadedBy: {
+      id: "u5",
+      name: "Michael Chen",
+      email: "michael@example.com",
+      avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael"
+    },
+    extractions: [
+      {
+        id: "e6",
+        type: "Operating Statement",
+        status: "completed",
+        date: "2023-06-15",
+        fileType: "excel",
+        properties: [
+          {
+            id: "p7",
+            name: "Tech Hub Campus"
+          }
+        ],
+        project: {
+          id: "pr5",
+          name: "Innovation District"
+        },
+        portfolio: {
+          id: "pf5",
+          name: "Tech Properties"
+        },
+        uploadedBy: {
+          id: "u5",
+          name: "Michael Chen",
+          email: "michael@example.com",
+          avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael"
+        }
+      }
+    ]
+  },
+  // Adding more documents with similar structure...
+  {
+    id: "6",
+    name: "2023_AnnualReport.pdf",
+    dateUploaded: "2023-12-31",
+    uploadedBy: {
+      id: "u1",
+      name: "John Doe",
+      email: "john@example.com",
+      avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=John"
+    },
+    extractions: [
+      {
+        id: "e7",
+        type: "Operating Statement",
+        status: "completed",
+        date: "2023-12-31",
+        fileType: "pdf",
+        properties: [
+          {
+            id: "p8",
+            name: "Central Business Tower"
+          },
+          {
+            id: "p9",
+            name: "Harbor View Office"
+          }
+        ],
+        project: {
+          id: "pr6",
+          name: "Downtown Revitalization"
+        },
+        portfolio: {
+          id: "pf6",
+          name: "Mixed-Use Properties"
+        },
+        uploadedBy: {
+          id: "u1",
+          name: "John Doe",
+          email: "john@example.com",
+          avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=John"
+        }
+      }
+    ]
+  },
+  // ... Adding 11 more similar documents with varied data
+  {
+    id: "7",
+    name: "Q4_2023_MarketAnalysis.pdf",
+    dateUploaded: "2024-01-02",
+    uploadedBy: {
+      id: "u2",
+      name: "Jane Smith",
+      email: "jane@example.com",
+      avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane"
+    },
+    extractions: [
+      {
+        id: "e8",
+        type: "Rent Roll",
+        status: "processing",
+        date: "2024-01-02",
+        fileType: "excel",
+        properties: [
+          {
+            id: "p10",
+            name: "Parkview Residences"
+          }
+        ],
+        project: {
+          id: "pr7",
+          name: "Residential Expansion"
+        },
+        portfolio: {
+          id: "pf7",
+          name: "Residential Properties"
+        },
+        uploadedBy: {
+          id: "u2",
+          name: "Jane Smith",
+          email: "jane@example.com",
+          avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane"
+        }
+      }
+    ]
+  },
 ];
 
 export function FileRepository() {
