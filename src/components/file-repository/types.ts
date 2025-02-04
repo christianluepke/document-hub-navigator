@@ -2,6 +2,7 @@ export interface Document {
   id: string;
   name: string;
   dateUploaded: string;
+  database?: string;
   extractions: Extraction[];
   uploadedBy: {
     id: string;
@@ -35,6 +36,7 @@ export interface Extraction {
     email: string;
     avatarUrl?: string;
   };
+  selected?: boolean;
 }
 
 export interface ExtractionUpdate {
@@ -43,4 +45,10 @@ export interface ExtractionUpdate {
     id: string;
     name: string;
   }[];
+}
+
+export interface ColumnConfig {
+  id: string;
+  label: string;
+  visible: boolean;
 }

@@ -337,8 +337,15 @@ const documents: Document[] = [
 
 export function FileRepository() {
   const [selectedDocs, setSelectedDocs] = useState<string[]>([]);
+  const [selectedExtractions, setSelectedExtractions] = useState<string[]>([]);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
   const [filters, setFilters] = useState<Filters>({});
+  const [columns, setColumns] = useState<ColumnConfig[]>([
+    { id: "database", label: "Database", visible: false },
+    { id: "property", label: "Property", visible: false },
+    { id: "project", label: "Project", visible: false },
+    { id: "portfolio", label: "Portfolio", visible: false },
+  ]);
   const { toast } = useToast();
 
   const filteredDocuments = documents.filter((doc) => {
@@ -374,21 +381,74 @@ export function FileRepository() {
       if (!hasPortfolio) return false;
     }
 
+    if (filters.fileType) {
+      const hasFileType = doc.extractions.some(
+        (ext) => ext.fileType === filters.fileType
+      );
+      if (!hasFileType) return false;
+    }
+
     return true;
   });
 
   const toggleSelectAll = () => {
     if (selectedDocs.length === filteredDocuments.length) {
       setSelectedDocs([]);
+      setSelectedExtractions([]);
     } else {
       setSelectedDocs(filteredDocuments.map((doc) => doc.id));
+      setSelectedExtractions(
+        filteredDocuments.flatMap((doc) =>
+          doc.extractions.map((ext) => ext.id)
+        )
+      );
     }
   };
 
-  const toggleSelect = (id: string) => {
+  const toggleSelect = (docId: string, extractionIds: string[]) => {
     setSelectedDocs((prev) =>
-      prev.includes(id) ? prev.filter((docId) => docId !== id) : [...prev, id]
+      prev.includes(docId)
+        ? prev.filter((id) => id !== docId)
+        : [...prev, docId]
     );
+    
+    setSelectedExtractions((prev) => {
+      const newSelection = new Set(prev);
+      extractionIds.forEach((extId) => {
+        if (prev.includes(extId)) {
+          newSelection.delete(extId);
+        } else {
+          newSelection.add(extId);
+        }
+      });
+      return Array.from(newSelection);
+    });
+  };
+
+  const toggleExtraction = (extractionId: string, docId: string) => {
+    setSelectedExtractions((prev) => {
+      const newSelection = new Set(prev);
+      if (prev.includes(extractionId)) {
+        newSelection.delete(extractionId);
+      } else {
+        newSelection.add(extractionId);
+      }
+      return Array.from(newSelection);
+    });
+
+    // Update document selection based on whether all its extractions are selected
+    const doc = documents.find((d) => d.id === docId);
+    if (doc) {
+      const allExtractionIds = doc.extractions.map((ext) => ext.id);
+      const allSelected = allExtractionIds.every((id) =>
+        selectedExtractions.includes(id)
+      );
+      setSelectedDocs((prev) =>
+        allSelected
+          ? [...prev, docId]
+          : prev.filter((id) => id !== docId)
+      );
+    }
   };
 
   const toggleExpand = (id: string) => {
@@ -411,6 +471,15 @@ export function FileRepository() {
       variant: "destructive",
     });
     setSelectedDocs([]);
+    setSelectedExtractions([]);
+  };
+
+  const toggleColumn = (columnId: string) => {
+    setColumns((prev) =>
+      prev.map((col) =>
+        col.id === columnId ? { ...col, visible: !col.visible } : col
+      )
+    );
   };
 
   return (
@@ -418,6 +487,7 @@ export function FileRepository() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Document Repository</h1>
         <div className="flex gap-4">
+          <ColumnManager columns={columns} onColumnToggle={toggleColumn} />
           <UploadDialog />
           <BulkActions
             selectedCount={selectedDocs.length}
@@ -445,6 +515,17 @@ export function FileRepository() {
               <th className="p-4 text-left font-medium text-sm text-gray-600">
                 Type
               </th>
+              {columns.map(
+                (col) =>
+                  col.visible && (
+                    <th
+                      key={col.id}
+                      className="p-4 text-left font-medium text-sm text-gray-600"
+                    >
+                      {col.label}
+                    </th>
+                  )
+              )}
               <th className="p-4 text-left font-medium text-sm text-gray-600">
                 Date Uploaded
               </th>
@@ -459,9 +540,12 @@ export function FileRepository() {
                 key={doc.id}
                 document={doc}
                 isSelected={selectedDocs.includes(doc.id)}
+                selectedExtractions={selectedExtractions}
                 isExpanded={expandedRows.includes(doc.id)}
                 onSelect={toggleSelect}
+                onSelectExtraction={toggleExtraction}
                 onExpand={toggleExpand}
+                visibleColumns={columns.filter((col) => col.visible)}
               />
             ))}
           </tbody>

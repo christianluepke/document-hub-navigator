@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type Document, type Extraction } from "./types";
+import { type Document } from "./types";
 
 interface FilterBarProps {
   documents: Document[];
@@ -19,6 +19,7 @@ export interface Filters {
   property?: string;
   project?: string;
   portfolio?: string;
+  fileType?: "excel" | "pdf";
 }
 
 export function FilterBar({ documents, onFiltersChange }: FilterBarProps) {
@@ -54,6 +55,7 @@ export function FilterBar({ documents, onFiltersChange }: FilterBarProps) {
       ).filter(Boolean)
     )
   );
+  const fileTypes = ["excel", "pdf"];
 
   const handleFilterChange = (key: keyof Filters, value: string | undefined) => {
     const newFilters = { ...filters, [key]: value };
@@ -141,6 +143,21 @@ export function FilterBar({ documents, onFiltersChange }: FilterBarProps) {
           {portfolios.map((portfolio) => (
             <SelectItem key={portfolio} value={portfolio}>
               {portfolio}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select
+        onValueChange={(value) => handleFilterChange("fileType", value)}
+      >
+        <SelectTrigger className="w-[200px]">
+          <SelectValue placeholder="Filter by file type" />
+        </SelectTrigger>
+        <SelectContent>
+          {fileTypes.map((type) => (
+            <SelectItem key={type} value={type}>
+              {type.toUpperCase()}
             </SelectItem>
           ))}
         </SelectContent>
