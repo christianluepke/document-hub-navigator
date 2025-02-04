@@ -5,7 +5,8 @@ import { BulkActions } from "./file-repository/BulkActions";
 import { DocumentRow } from "./file-repository/DocumentRow";
 import { UploadDialog } from "./file-repository/UploadDialog";
 import { FilterBar, type Filters } from "./file-repository/FilterBar";
-import { type Document } from "./file-repository/types";
+import { ColumnManager } from "./file-repository/ColumnManager";
+import { type Document, type ColumnConfig } from "./file-repository/types";
 
 const documents: Document[] = [
   {

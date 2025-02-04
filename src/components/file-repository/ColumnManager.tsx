@@ -6,6 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Menu } from "lucide-react";
+import { type ColumnConfig } from "./types";
 
 interface ColumnManagerProps {
   columns: ColumnConfig[];

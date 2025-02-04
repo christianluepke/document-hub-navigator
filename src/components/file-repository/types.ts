@@ -39,16 +39,16 @@ export interface Extraction {
   selected?: boolean;
 }
 
+export interface ColumnConfig {
+  id: string;
+  label: string;
+  visible: boolean;
+}
+
 export interface ExtractionUpdate {
   type: string;
   properties: {
     id: string;
     name: string;
   }[];
-}
-
-export interface ColumnConfig {
-  id: string;
-  label: string;
-  visible: boolean;
 }
