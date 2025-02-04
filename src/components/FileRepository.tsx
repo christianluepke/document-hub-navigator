@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { BulkActions } from "./file-repository/BulkActions";
-import { DocumentRow } from "./file-repository/DocumentRow";
 import { UploadDialog } from "./file-repository/UploadDialog";
 import { FilterBar, type Filters } from "./file-repository/FilterBar";
 import { ColumnManager } from "./file-repository/ColumnManager";
+import { Table } from "./file-repository/table/Table";
 import { type Document, type ColumnConfig } from "./file-repository/types";
 
 const documents: Document[] = [
@@ -392,20 +391,6 @@ export function FileRepository() {
     return true;
   });
 
-  const toggleSelectAll = () => {
-    if (selectedDocs.length === filteredDocuments.length) {
-      setSelectedDocs([]);
-      setSelectedExtractions([]);
-    } else {
-      setSelectedDocs(filteredDocuments.map((doc) => doc.id));
-      setSelectedExtractions(
-        filteredDocuments.flatMap((doc) =>
-          doc.extractions.map((ext) => ext.id)
-        )
-      );
-    }
-  };
-
   const toggleSelect = (docId: string, extractionIds: string[]) => {
     setSelectedDocs((prev) =>
       prev.includes(docId)
@@ -437,7 +422,6 @@ export function FileRepository() {
       return Array.from(newSelection);
     });
 
-    // Update document selection based on whether all its extractions are selected
     const doc = documents.find((d) => d.id === docId);
     if (doc) {
       const allExtractionIds = doc.extractions.map((ext) => ext.id);
@@ -500,58 +484,16 @@ export function FileRepository() {
 
       <FilterBar documents={documents} onFiltersChange={setFilters} />
 
-      <div className="bg-white rounded-lg shadow-sm border">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b">
-              <th className="p-4 text-left">
-                <Checkbox
-                  checked={selectedDocs.length === filteredDocuments.length}
-                  onCheckedChange={toggleSelectAll}
-                />
-              </th>
-              <th className="p-4 text-left font-medium text-sm text-gray-600">
-                Document
-              </th>
-              <th className="p-4 text-left font-medium text-sm text-gray-600">
-                Type
-              </th>
-              {columns.map(
-                (col) =>
-                  col.visible && (
-                    <th
-                      key={col.id}
-                      className="p-4 text-left font-medium text-sm text-gray-600"
-                    >
-                      {col.label}
-                    </th>
-                  )
-              )}
-              <th className="p-4 text-left font-medium text-sm text-gray-600">
-                Date Uploaded
-              </th>
-              <th className="p-4 text-left font-medium text-sm text-gray-600">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredDocuments.map((doc) => (
-              <DocumentRow
-                key={doc.id}
-                document={doc}
-                isSelected={selectedDocs.includes(doc.id)}
-                selectedExtractions={selectedExtractions}
-                isExpanded={expandedRows.includes(doc.id)}
-                onSelect={toggleSelect}
-                onSelectExtraction={toggleExtraction}
-                onExpand={toggleExpand}
-                visibleColumns={columns.filter((col) => col.visible)}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table
+        documents={filteredDocuments}
+        selectedDocs={selectedDocs}
+        selectedExtractions={selectedExtractions}
+        expandedRows={expandedRows}
+        visibleColumns={columns}
+        onSelect={toggleSelect}
+        onSelectExtraction={toggleExtraction}
+        onExpand={toggleExpand}
+      />
     </div>
   );
 }
