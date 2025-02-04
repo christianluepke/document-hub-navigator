@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { type Document } from "./types";
 
 interface FilterBarProps {
@@ -66,102 +67,127 @@ export function FilterBar({ documents, onFiltersChange }: FilterBarProps) {
     onFiltersChange(newFilters);
   };
 
+  const clearFilters = () => {
+    setFilters({});
+    onFiltersChange({});
+  };
+
   return (
-    <div className="flex flex-wrap gap-4 mb-6">
-      <Select
-        onValueChange={(value) => handleFilterChange("submitter", value)}
-      >
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Filter by submitter" />
-        </SelectTrigger>
-        <SelectContent>
-          {submitters.map((submitter) => (
-            <SelectItem key={submitter} value={submitter}>
-              {submitter}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-4">
+        <Select
+          value={filters.submitter}
+          onValueChange={(value) => handleFilterChange("submitter", value)}
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by submitter" />
+          </SelectTrigger>
+          <SelectContent>
+            {submitters.map((submitter) => (
+              <SelectItem key={submitter} value={submitter}>
+                {submitter}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select
-        onValueChange={(value) =>
-          handleFilterChange(
-            "documentType",
-            value as "Rent Roll" | "Operating Statement"
-          )
-        }
-      >
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Filter by document type" />
-        </SelectTrigger>
-        <SelectContent>
-          {documentTypes.map((type) => (
-            <SelectItem key={type} value={type}>
-              {type}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <Select
+          value={filters.documentType}
+          onValueChange={(value) =>
+            handleFilterChange(
+              "documentType",
+              value as "Rent Roll" | "Operating Statement"
+            )
+          }
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by document type" />
+          </SelectTrigger>
+          <SelectContent>
+            {documentTypes.map((type) => (
+              <SelectItem key={type} value={type}>
+                {type}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select
-        onValueChange={(value) => handleFilterChange("property", value)}
-      >
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Filter by property" />
-        </SelectTrigger>
-        <SelectContent>
-          {properties.map((property) => (
-            <SelectItem key={property} value={property}>
-              {property}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <Select
+          value={filters.property}
+          onValueChange={(value) => handleFilterChange("property", value)}
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by property" />
+          </SelectTrigger>
+          <SelectContent>
+            {properties.map((property) => (
+              <SelectItem key={property} value={property}>
+                {property}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select
-        onValueChange={(value) => handleFilterChange("project", value)}
-      >
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Filter by project" />
-        </SelectTrigger>
-        <SelectContent>
-          {projects.map((project) => (
-            <SelectItem key={project} value={project}>
-              {project}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <Select
+          value={filters.project}
+          onValueChange={(value) => handleFilterChange("project", value)}
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by project" />
+          </SelectTrigger>
+          <SelectContent>
+            {projects.map((project) => (
+              <SelectItem key={project} value={project}>
+                {project}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select
-        onValueChange={(value) => handleFilterChange("portfolio", value)}
-      >
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Filter by portfolio" />
-        </SelectTrigger>
-        <SelectContent>
-          {portfolios.map((portfolio) => (
-            <SelectItem key={portfolio} value={portfolio}>
-              {portfolio}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <Select
+          value={filters.portfolio}
+          onValueChange={(value) => handleFilterChange("portfolio", value)}
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by portfolio" />
+          </SelectTrigger>
+          <SelectContent>
+            {portfolios.map((portfolio) => (
+              <SelectItem key={portfolio} value={portfolio}>
+                {portfolio}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select
-        onValueChange={(value) => handleFilterChange("fileType", value)}
-      >
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Filter by file type" />
-        </SelectTrigger>
-        <SelectContent>
-          {fileTypes.map((type) => (
-            <SelectItem key={type} value={type}>
-              {type.toUpperCase()}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <Select
+          value={filters.fileType}
+          onValueChange={(value) => handleFilterChange("fileType", value as "excel" | "pdf")}
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by file type" />
+          </SelectTrigger>
+          <SelectContent>
+            {fileTypes.map((type) => (
+              <SelectItem key={type} value={type}>
+                {type.toUpperCase()}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      
+      {Object.keys(filters).length > 0 && (
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            onClick={clearFilters}
+            className="text-sm"
+          >
+            Clear All Filters
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
