@@ -4,7 +4,8 @@ import { BulkActions } from "./file-repository/BulkActions";
 import { UploadDialog } from "./file-repository/UploadDialog";
 import { FilterBar, type Filters } from "./file-repository/FilterBar";
 import { ColumnManager } from "./file-repository/ColumnManager";
-import { Table } from "./file-repository/table/Table";
+import { GroupBySelect, type GroupByOption } from "./file-repository/GroupBySelect";
+import { GroupedDocuments } from "./file-repository/GroupedDocuments";
 import { type Document, type ColumnConfig } from "./file-repository/types";
 
 const documents: Document[] = [
@@ -340,6 +341,7 @@ export function FileRepository() {
   const [selectedExtractions, setSelectedExtractions] = useState<string[]>([]);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
   const [filters, setFilters] = useState<Filters>({});
+  const [groupBy, setGroupBy] = useState<GroupByOption>("none");
   const [columns, setColumns] = useState<ColumnConfig[]>([
     { id: "database", label: "Database", visible: false },
     { id: "property", label: "Property", visible: false },
@@ -472,6 +474,7 @@ export function FileRepository() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Document Repository</h1>
         <div className="flex gap-4">
+          <GroupBySelect value={groupBy} onChange={setGroupBy} />
           <ColumnManager columns={columns} onColumnToggle={toggleColumn} />
           <UploadDialog />
           <BulkActions
@@ -484,8 +487,9 @@ export function FileRepository() {
 
       <FilterBar documents={documents} onFiltersChange={setFilters} />
 
-      <Table
+      <GroupedDocuments
         documents={filteredDocuments}
+        groupBy={groupBy}
         selectedDocs={selectedDocs}
         selectedExtractions={selectedExtractions}
         expandedRows={expandedRows}
