@@ -1,4 +1,6 @@
+
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -7,11 +9,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 import { type Document } from "./types";
 
 interface FilterBarProps {
   documents: Document[];
   onFiltersChange: (filters: Filters) => void;
+  onSearchChange: (search: string) => void;
 }
 
 export interface Filters {
@@ -23,8 +27,9 @@ export interface Filters {
   fileType?: "excel" | "pdf";
 }
 
-export function FilterBar({ documents, onFiltersChange }: FilterBarProps) {
+export function FilterBar({ documents, onFiltersChange, onSearchChange }: FilterBarProps) {
   const [filters, setFilters] = useState<Filters>({});
+  const [search, setSearch] = useState("");
 
   // Extract unique values for each filter
   const submitters = Array.from(
@@ -67,6 +72,11 @@ export function FilterBar({ documents, onFiltersChange }: FilterBarProps) {
     onFiltersChange(newFilters);
   };
 
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    onSearchChange(value);
+  };
+
   const clearFilters = () => {
     setFilters({});
     onFiltersChange({});
@@ -75,6 +85,16 @@ export function FilterBar({ documents, onFiltersChange }: FilterBarProps) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-4">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Search documents..."
+            value={search}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+
         <Select
           value={filters.submitter}
           onValueChange={(value) => handleFilterChange("submitter", value)}

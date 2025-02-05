@@ -341,6 +341,7 @@ export function FileRepository() {
   const [selectedExtractions, setSelectedExtractions] = useState<string[]>([]);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
   const [filters, setFilters] = useState<Filters>({});
+  const [searchTerm, setSearchTerm] = useState("");
   const [groupBy, setGroupBy] = useState<GroupByOption>("none");
   const [columns, setColumns] = useState<ColumnConfig[]>([
     { id: "database", label: "Database", visible: false },
@@ -351,6 +352,11 @@ export function FileRepository() {
   const { toast } = useToast();
 
   const filteredDocuments = documents.filter((doc) => {
+    // Search filter
+    if (searchTerm && !doc.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+      return false;
+    }
+
     if (filters.submitter && doc.uploadedBy.name !== filters.submitter) {
       return false;
     }
@@ -394,12 +400,6 @@ export function FileRepository() {
   });
 
   const toggleSelect = (docId: string, extractionIds: string[]) => {
-    setSelectedDocs((prev) =>
-      prev.includes(docId)
-        ? prev.filter((id) => id !== docId)
-        : [...prev, docId]
-    );
-    
     setSelectedExtractions((prev) => {
       const newSelection = new Set(prev);
       extractionIds.forEach((extId) => {
@@ -423,19 +423,6 @@ export function FileRepository() {
       }
       return Array.from(newSelection);
     });
-
-    const doc = documents.find((d) => d.id === docId);
-    if (doc) {
-      const allExtractionIds = doc.extractions.map((ext) => ext.id);
-      const allSelected = allExtractionIds.every((id) =>
-        selectedExtractions.includes(id)
-      );
-      setSelectedDocs((prev) =>
-        allSelected
-          ? [...prev, docId]
-          : prev.filter((id) => id !== docId)
-      );
-    }
   };
 
   const toggleExpand = (id: string) => {
@@ -478,14 +465,18 @@ export function FileRepository() {
           <ColumnManager columns={columns} onColumnToggle={toggleColumn} />
           <UploadDialog />
           <BulkActions
-            selectedCount={selectedDocs.length}
+            selectedCount={selectedExtractions.length}
             onDownload={handleBulkDownload}
             onDelete={handleBulkDelete}
           />
         </div>
       </div>
 
-      <FilterBar documents={documents} onFiltersChange={setFilters} />
+      <FilterBar 
+        documents={documents} 
+        onFiltersChange={setFilters} 
+        onSearchChange={setSearchTerm}
+      />
 
       <GroupedDocuments
         documents={filteredDocuments}
@@ -493,7 +484,7 @@ export function FileRepository() {
         selectedDocs={selectedDocs}
         selectedExtractions={selectedExtractions}
         expandedRows={expandedRows}
-        visibleColumns={columns}
+        visibleColumns={columns.filter(col => col.visible)}
         onSelect={toggleSelect}
         onSelectExtraction={toggleExtraction}
         onExpand={toggleExpand}

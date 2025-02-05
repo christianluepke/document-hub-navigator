@@ -1,3 +1,4 @@
+
 import { ChevronDown, ChevronUp, File } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -51,6 +52,11 @@ export function DocumentRow({
     }
   };
 
+  const allExtractionIds = document.extractions.map((ext) => ext.id);
+  const allExtractionsSelected = allExtractionIds.every((id) =>
+    selectedExtractions.includes(id)
+  );
+
   return (
     <>
       <tr
@@ -59,11 +65,11 @@ export function DocumentRow({
       >
         <td className="p-4">
           <Checkbox
-            checked={isSelected}
+            checked={allExtractionsSelected}
             onCheckedChange={() =>
               onSelect(
                 document.id,
-                document.extractions.map((ext) => ext.id)
+                allExtractionsSelected ? [] : allExtractionIds
               )
             }
           />
