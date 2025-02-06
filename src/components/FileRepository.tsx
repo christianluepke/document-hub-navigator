@@ -11,8 +11,8 @@ import { type Document, type ColumnConfig } from "./file-repository/types";
 const documents: Document[] = [
   {
     id: "1",
-    name: "Q4_2023_RentRoll.pdf",
-    dateUploaded: "2024-01-15",
+    name: "2024_Q1_RentRoll.xlsx",
+    dateUploaded: "2024-01-20",
     uploadedBy: {
       id: "u1",
       name: "John Doe",
@@ -24,60 +24,25 @@ const documents: Document[] = [
         id: "e1",
         type: "Rent Roll",
         status: "completed",
-        date: "2024-01-15",
+        date: "2024-01-20",
         fileType: "excel",
         properties: [
           {
             id: "p1",
-            name: "Sunset Plaza"
+            name: "North Tower"
           },
           {
             id: "p2",
-            name: "Downtown Heights"
-          },
-          {
-            id: "p3",
-            name: "Riverside Mall"
-          },
-          {
-            id: "p4",
-            name: "Ocean View Complex"
+            name: "South Tower"
           }
         ],
         project: {
           id: "pr1",
-          name: "West Coast Properties"
+          name: "Downtown Business District"
         },
         portfolio: {
           id: "pf1",
-          name: "Commercial Real Estate"
-        },
-        uploadedBy: {
-          id: "u2",
-          name: "Jane Smith",
-          email: "jane@example.com",
-          avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane"
-        }
-      },
-      {
-        id: "e2",
-        type: "Operating Statement",
-        status: "draft",
-        date: "2024-01-15",
-        fileType: "pdf",
-        properties: [
-          {
-            id: "p1",
-            name: "Sunset Plaza"
-          }
-        ],
-        project: {
-          id: "pr1",
-          name: "West Coast Properties"
-        },
-        portfolio: {
-          id: "pf1",
-          name: "Commercial Real Estate"
+          name: "Urban Office Portfolio"
         },
         uploadedBy: {
           id: "u1",
@@ -86,7 +51,69 @@ const documents: Document[] = [
           avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=John"
         }
       },
-    ],
+      {
+        id: "e2",
+        type: "Rent Roll",
+        status: "completed",
+        date: "2024-01-20",
+        fileType: "excel",
+        properties: [
+          {
+            id: "p3",
+            name: "East Wing"
+          },
+          {
+            id: "p4",
+            name: "West Wing"
+          }
+        ],
+        project: {
+          id: "pr1",
+          name: "Downtown Business District"
+        },
+        portfolio: {
+          id: "pf1",
+          name: "Urban Office Portfolio"
+        },
+        uploadedBy: {
+          id: "u1",
+          name: "John Doe",
+          email: "john@example.com",
+          avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=John"
+        }
+      },
+      {
+        id: "e3",
+        type: "Rent Roll",
+        status: "completed",
+        date: "2024-01-20",
+        fileType: "excel",
+        properties: [
+          {
+            id: "p5",
+            name: "Plaza Building"
+          },
+          {
+            id: "p6",
+            name: "Garden Tower"
+          }
+        ],
+        project: {
+          id: "pr1",
+          name: "Downtown Business District"
+        },
+        portfolio: {
+          id: "pf1",
+          name: "Urban Office Portfolio"
+        },
+        uploadedBy: {
+          id: "u1",
+          name: "John Doe",
+          email: "john@example.com",
+          avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=John"
+        }
+      }
+    ]
   },
   {
     id: "2",
