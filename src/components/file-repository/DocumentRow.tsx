@@ -4,6 +4,12 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { type Document, type ColumnConfig } from "./types";
 import { ExtractionsPanel } from "./ExtractionsPanel";
 import { Link } from "react-router-dom";
@@ -19,6 +25,59 @@ interface DocumentRowProps {
   visibleColumns: ColumnConfig[];
 }
 
+interface ClickableValueProps {
+  values: string[];
+  maxDisplay?: number;
+  className?: string;
+}
+
+const ClickableValue = ({ values, maxDisplay = 5, className }: ClickableValueProps) => {
+  if (!values.length) return <span className={className}>N/A</span>;
+
+  const displayValues = values.slice(0, maxDisplay);
+  const remainingValues = values.slice(maxDisplay);
+
+  return (
+    <div className={cn("flex flex-wrap gap-1", className)}>
+      {displayValues.map((value, index) => (
+        <>
+          <Link
+            key={value}
+            to={`/search?value=${encodeURIComponent(value)}`}
+            className="text-blue-600 hover:text-blue-800 hover:underline"
+          >
+            {value}
+          </Link>
+          {index < displayValues.length - 1 && ", "}
+        </>
+      ))}
+      {remainingValues.length > 0 && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger className="text-gray-500 hover:text-gray-700">
+              {` + ${remainingValues.length} other`}
+            </TooltipTrigger>
+            <TooltipContent className="p-2">
+              <div className="flex flex-col gap-1">
+                {remainingValues.map((value, index) => (
+                  <Link
+                    key={value}
+                    to={`/search?value=${encodeURIComponent(value)}`}
+                    className="text-blue-600 hover:text-blue-800 hover:underline whitespace-nowrap"
+                  >
+                    {value}
+                    {index < remainingValues.length - 1 && ", "}
+                  </Link>
+                ))}
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+    </div>
+  );
+};
+
 export function DocumentRow({
   document,
   isSelected,
@@ -32,21 +91,37 @@ export function DocumentRow({
   const getColumnValue = (columnId: string) => {
     switch (columnId) {
       case "database":
-        return document.database || "N/A";
-      case "property":
-        return document.extractions
-          .flatMap((ext) => ext.properties.map((prop) => prop.name))
-          .join(", ") || "N/A";
-      case "project":
-        return document.extractions
-          .map((ext) => ext.project?.name)
-          .filter(Boolean)
-          .join(", ") || "N/A";
-      case "portfolio":
-        return document.extractions
-          .map((ext) => ext.portfolio?.name)
-          .filter(Boolean)
-          .join(", ") || "N/A";
+        return <ClickableValue values={[document.database || "N/A"]} />;
+      case "property": {
+        const uniqueProperties = Array.from(
+          new Set(
+            document.extractions.flatMap((ext) =>
+              ext.properties.map((prop) => prop.name)
+            )
+          )
+        );
+        return <ClickableValue values={uniqueProperties} />;
+      }
+      case "project": {
+        const uniqueProjects = Array.from(
+          new Set(
+            document.extractions
+              .map((ext) => ext.project?.name)
+              .filter(Boolean) as string[]
+          )
+        );
+        return <ClickableValue values={uniqueProjects} />;
+      }
+      case "portfolio": {
+        const uniquePortfolios = Array.from(
+          new Set(
+            document.extractions
+              .map((ext) => ext.portfolio?.name)
+              .filter(Boolean) as string[]
+          )
+        );
+        return <ClickableValue values={uniquePortfolios} />;
+      }
       default:
         return "N/A";
     }
