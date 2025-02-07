@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { type Extraction } from "./types";
 import { Badge } from "@/components/ui/badge";
-import { Edit2, FileSpreadsheet, File, Save, X, ArrowsUpDown } from "lucide-react";
+import { Edit2, FileSpreadsheet, File, Save, X, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -196,7 +196,7 @@ export function ExtractionsPanel({
                               className="ml-1 h-4 w-4 p-0"
                               onClick={toggleAreaUnit}
                             >
-                              <ArrowsUpDown className="h-3 w-3" />
+                              <ChevronsUpDown className="h-3 w-3" />
                             </Button>
                           </div>
                           <div className="text-sm text-gray-600">{formatArea(extraction.lettableArea)}</div>
