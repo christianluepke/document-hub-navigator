@@ -27,6 +27,15 @@ const documents: Document[] = [
         status: "completed",
         date: "2024-01-20",
         fileType: "excel",
+        assetClass: "Office",
+        rentRollDate: "31/12/2023",
+        unitCount: 245,
+        lettableArea: {
+          sqm: 45000,
+          sqft: 484376
+        },
+        contractedRentPerAnnum: 12500000,
+        occupancyRate: 94.5,
         properties: [
           {
             id: "p1",
@@ -506,3 +515,4 @@ export function FileRepository() {
     </div>
   );
 }
+

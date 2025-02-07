@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { type Extraction } from "./types";
 import { Badge } from "@/components/ui/badge";
-import { Edit2, FileSpreadsheet, File, Save, X } from "lucide-react";
+import { Edit2, FileSpreadsheet, File, Save, X, ArrowsUpDown } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -22,6 +22,7 @@ export function ExtractionsPanel({
 }: ExtractionsPanelProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editedType, setEditedType] = useState("");
+  const [areaUnit, setAreaUnit] = useState<"sqm" | "sqft">("sqm");
   const { toast } = useToast();
 
   const handleSave = (extraction: Extraction) => {
@@ -30,6 +31,16 @@ export function ExtractionsPanel({
       description: "The extraction has been updated successfully.",
     });
     setEditingId(null);
+  };
+
+  const toggleAreaUnit = () => {
+    setAreaUnit(prev => prev === "sqm" ? "sqft" : "sqm");
+  };
+
+  const formatArea = (area?: { sqm: number; sqft: number }) => {
+    if (!area) return "N/A";
+    const value = areaUnit === "sqm" ? area.sqm : area.sqft;
+    return `${value.toLocaleString()} ${areaUnit}`;
   };
 
   const formatProperties = (properties: { id: string; name: string }[]) => {
@@ -159,6 +170,54 @@ export function ExtractionsPanel({
                       >
                         {extraction.portfolio.name}
                       </Link>
+                    </div>
+                  )}
+                  {extraction.status === "completed" && (
+                    <div className="mt-4 space-y-2 border-t pt-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <div className="text-sm font-medium text-gray-700">Asset Class</div>
+                          <div className="text-sm text-gray-600">{extraction.assetClass || "N/A"}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-700">Rent Roll Date</div>
+                          <div className="text-sm text-gray-600">{extraction.rentRollDate || "N/A"}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-700">Unit Count</div>
+                          <div className="text-sm text-gray-600">{extraction.unitCount?.toLocaleString() || "N/A"}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-700">
+                            Lettable Area
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="ml-1 h-4 w-4 p-0"
+                              onClick={toggleAreaUnit}
+                            >
+                              <ArrowsUpDown className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          <div className="text-sm text-gray-600">{formatArea(extraction.lettableArea)}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-700">Contracted Rent p.a.</div>
+                          <div className="text-sm text-gray-600">
+                            {extraction.contractedRentPerAnnum
+                              ? `$${extraction.contractedRentPerAnnum.toLocaleString()}`
+                              : "N/A"}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-700">Occupancy</div>
+                          <div className="text-sm text-gray-600">
+                            {extraction.occupancyRate
+                              ? `${extraction.occupancyRate.toFixed(1)}%`
+                              : "N/A"}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>

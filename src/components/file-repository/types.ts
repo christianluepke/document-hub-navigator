@@ -37,6 +37,15 @@ export interface Extraction {
     avatarUrl?: string;
   };
   selected?: boolean;
+  assetClass?: "Office" | "Residential" | "Logistics" | "Retail" | "Mixed Use";
+  rentRollDate?: string;
+  unitCount?: number;
+  lettableArea?: {
+    sqm: number;
+    sqft: number;
+  };
+  contractedRentPerAnnum?: number;
+  occupancyRate?: number;
 }
 
 export interface ColumnConfig {
