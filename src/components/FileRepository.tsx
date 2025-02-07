@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { BulkActions } from "./file-repository/BulkActions";
-import { UploadDialog } from "./file-repository/UploadDialog";
+import { FileRepositoryHeader } from "./file-repository/FileRepositoryHeader";
 import { FilterBar, type Filters } from "./file-repository/FilterBar";
-import { ColumnManager } from "./file-repository/ColumnManager";
-import { GroupBySelect, type GroupByOption } from "./file-repository/GroupBySelect";
 import { GroupedDocuments } from "./file-repository/GroupedDocuments";
 import { type Document, type ColumnConfig } from "./file-repository/types";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy } from '@dnd-kit/sortable';
+import { filterDocuments } from "./file-repository/utils/documentUtils";
 
 const documents: Document[] = [
   {
@@ -462,69 +460,19 @@ export function FileRepository() {
     );
   };
 
-  const filteredDocuments = documents.filter((doc) => {
-    // Search filter
-    if (searchTerm && !doc.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-      return false;
-    }
-
-    if (filters.submitter && doc.uploadedBy.name !== filters.submitter) {
-      return false;
-    }
-
-    if (filters.documentType) {
-      const hasDocType = doc.extractions.some(
-        (ext) => ext.type === filters.documentType
-      );
-      if (!hasDocType) return false;
-    }
-
-    if (filters.property) {
-      const hasProperty = doc.extractions.some((ext) =>
-        ext.properties.some((prop) => prop.name === filters.property)
-      );
-      if (!hasProperty) return false;
-    }
-
-    if (filters.project) {
-      const hasProject = doc.extractions.some(
-        (ext) => ext.project?.name === filters.project
-      );
-      if (!hasProject) return false;
-    }
-
-    if (filters.portfolio) {
-      const hasPortfolio = doc.extractions.some(
-        (ext) => ext.portfolio?.name === filters.portfolio
-      );
-      if (!hasPortfolio) return false;
-    }
-
-    if (filters.fileType) {
-      const hasFileType = doc.extractions.some(
-        (ext) => ext.fileType === filters.fileType
-      );
-      if (!hasFileType) return false;
-    }
-
-    return true;
-  });
+  const filteredDocuments = filterDocuments(documents, searchTerm, filters);
 
   return (
     <div className="w-full max-w-[1800px] mx-auto p-6 space-y-6 animate-fade-in">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">File Repository</h1>
-        <div className="flex gap-4">
-          <GroupBySelect value={groupBy} onChange={setGroupBy} />
-          <ColumnManager columns={columns} onColumnToggle={toggleColumn} />
-          <UploadDialog />
-          <BulkActions
-            selectedCount={selectedExtractions.length}
-            onDownload={handleBulkDownload}
-            onDelete={handleBulkDelete}
-          />
-        </div>
-      </div>
+      <FileRepositoryHeader
+        groupBy={groupBy}
+        columns={columns}
+        selectedCount={selectedExtractions.length}
+        onGroupByChange={setGroupBy}
+        onColumnToggle={toggleColumn}
+        onDownload={handleBulkDownload}
+        onDelete={handleBulkDelete}
+      />
 
       <FilterBar 
         documents={documents} 
