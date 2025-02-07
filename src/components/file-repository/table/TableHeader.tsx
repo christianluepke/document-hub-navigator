@@ -1,7 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { type TableHeaderProps } from "./types";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { SortableHeader } from "./SortableHeader";
 
 export function TableHeader({
   selectedDocs,
@@ -9,35 +8,6 @@ export function TableHeader({
   visibleColumns,
   onSelectAll,
 }: TableHeaderProps) {
-  const renderSortableHeader = (column: { id: string; label: string }) => {
-    const {
-      attributes,
-      listeners,
-      setNodeRef,
-      transform,
-      transition,
-    } = useSortable({ id: column.id });
-
-    const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
-      cursor: 'grab',
-    };
-
-    return (
-      <th
-        key={column.id}
-        ref={setNodeRef}
-        style={style}
-        {...attributes}
-        {...listeners}
-        className="p-4 text-left font-medium text-sm text-white bg-[#030630]"
-      >
-        {column.label}
-      </th>
-    );
-  };
-
   return (
     <thead>
       <tr className="border-b">
@@ -51,9 +21,15 @@ export function TableHeader({
           Document
         </th>
         <th className="p-4 text-left font-medium text-sm text-white bg-[#030630]">
-          Type
+          Uploaded By
         </th>
-        {visibleColumns.map(renderSortableHeader)}
+        {visibleColumns.map((column) => (
+          <SortableHeader
+            key={column.id}
+            id={column.id}
+            label={column.label}
+          />
+        ))}
         <th className="p-4 text-left font-medium text-sm text-white bg-[#030630]">
           Date Uploaded
         </th>
