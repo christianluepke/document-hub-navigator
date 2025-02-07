@@ -7,6 +7,7 @@ import { type Document, type ColumnConfig } from "./types";
 import { ExtractionsPanel } from "./ExtractionsPanel";
 import { ClickableValue } from "./ClickableValue";
 import { getUniqueProperties, getUniqueProjects, getUniquePortfolios } from "./utils/documentUtils";
+import { Badge } from "@/components/ui/badge";
 
 interface DocumentRowProps {
   document: Document;
@@ -44,6 +45,21 @@ export function DocumentRow({
     }
   };
 
+  const getFileStatus = () => {
+    if (document.extractions.length === 0) return { status: "pending", label: "Pending" };
+    
+    const allCompleted = document.extractions.every(ext => ext.status === "completed");
+    const anyFailed = document.extractions.some(ext => ext.status === "failed");
+    const anyProcessing = document.extractions.some(ext => ext.status === "processing");
+    
+    if (allCompleted) return { status: "completed", label: "Completed" };
+    if (anyFailed) return { status: "failed", label: "Failed" };
+    if (anyProcessing) return { status: "processing", label: "Processing" };
+    return { status: "pending", label: "Pending" };
+  };
+
+  const fileStatus = getFileStatus();
+
   const allExtractionIds = document.extractions.map((ext) => ext.id);
   const allExtractionsSelected = allExtractionIds.every((id) =>
     selectedExtractions.includes(id)
@@ -66,7 +82,23 @@ export function DocumentRow({
         <td className="p-4">
           <div className="flex items-center gap-3">
             <File className="w-5 h-5 text-gray-400" />
-            <span className="font-medium">{document.name}</span>
+            <div className="flex flex-col">
+              <span className="font-medium">{document.name}</span>
+              <Badge
+                variant={
+                  fileStatus.status === "completed"
+                    ? "default"
+                    : fileStatus.status === "processing"
+                    ? "secondary"
+                    : fileStatus.status === "failed"
+                    ? "destructive"
+                    : "outline"
+                }
+                className="w-fit mt-1"
+              >
+                {fileStatus.label}
+              </Badge>
+            </div>
           </div>
         </td>
         <td className="p-4">
