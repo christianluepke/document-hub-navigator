@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,6 +24,7 @@ export interface Filters {
   project?: string;
   portfolio?: string;
   fileType?: "excel" | "pdf";
+  status?: "Completed" | "Processing" | "Failed" | "Pending";
 }
 
 export function FilterBar({ documents, onFiltersChange, onSearchChange }: FilterBarProps) {
@@ -62,6 +62,7 @@ export function FilterBar({ documents, onFiltersChange, onSearchChange }: Filter
     )
   );
   const fileTypes = ["excel", "pdf"];
+  const statuses = ["Completed", "Processing", "Failed", "Pending"];
 
   const handleFilterChange = (key: keyof Filters, value: string | undefined) => {
     const newFilters = { ...filters, [key]: value };
@@ -127,6 +128,27 @@ export function FilterBar({ documents, onFiltersChange, onSearchChange }: Filter
             {documentTypes.map((type) => (
               <SelectItem key={type} value={type}>
                 {type}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={filters.status}
+          onValueChange={(value) => 
+            handleFilterChange(
+              "status",
+              value as "Completed" | "Processing" | "Failed" | "Pending"
+            )
+          }
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            {statuses.map((status) => (
+              <SelectItem key={status} value={status}>
+                {status}
               </SelectItem>
             ))}
           </SelectContent>

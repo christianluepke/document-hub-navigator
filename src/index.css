@@ -37,6 +37,10 @@
     --table-header: 240 89% 10%;
     --table-row: 0 0% 100%;
     --table-hover: 220 14% 98%;
+
+    /* Custom status colors */
+    --status-completed: 120 47% 84%;
+    --status-processing: 178 59% 71%;
   }
 }
 
@@ -48,4 +52,17 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom badge variants */
+.badge-completed {
+  background-color: #bceebd !important;
+  color: rgb(21 128 61) !important;
+  border-color: #a3e4a4 !important;
+}
+
+.badge-processing {
+  background-color: #87e1df !important;
+  color: rgb(17 94 89) !important;
+  border-color: #6ed7d5 !important;
 }

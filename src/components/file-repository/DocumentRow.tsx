@@ -85,16 +85,12 @@ export function DocumentRow({
             <div className="flex flex-col">
               <span className="font-medium">{document.name}</span>
               <Badge
-                variant={
-                  fileStatus.status === "completed"
-                    ? "default"
-                    : fileStatus.status === "processing"
-                    ? "secondary"
-                    : fileStatus.status === "failed"
-                    ? "destructive"
-                    : "outline"
-                }
-                className="w-fit mt-1"
+                variant="outline"
+                className={cn(
+                  "w-fit mt-1",
+                  fileStatus.status === "completed" && "badge-completed",
+                  fileStatus.status === "processing" && "badge-processing"
+                )}
               >
                 {fileStatus.label}
               </Badge>

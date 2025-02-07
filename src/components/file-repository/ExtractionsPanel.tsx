@@ -223,15 +223,13 @@ export function ExtractionsPanel({
                 </div>
               </div>
               <Badge
-                variant={
-                  extraction.status === "completed"
-                    ? "default"
-                    : extraction.status === "processing"
-                    ? "secondary"
-                    : "destructive"
-                }
+                variant="outline"
+                className={cn(
+                  extraction.status === "completed" && "badge-completed",
+                  extraction.status === "processing" && "badge-processing"
+                )}
               >
-                {extraction.status}
+                {extraction.status.charAt(0).toUpperCase() + extraction.status.slice(1)}
               </Badge>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-500">
