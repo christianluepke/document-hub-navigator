@@ -7,6 +7,8 @@ import { ColumnManager } from "./file-repository/ColumnManager";
 import { GroupBySelect, type GroupByOption } from "./file-repository/GroupBySelect";
 import { GroupedDocuments } from "./file-repository/GroupedDocuments";
 import { type Document, type ColumnConfig } from "./file-repository/types";
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 
 const documents: Document[] = [
   {
@@ -275,7 +277,6 @@ const documents: Document[] = [
       }
     ]
   },
-  // Adding more documents with similar structure...
   {
     id: "6",
     name: "2023_AnnualReport.pdf",
@@ -320,7 +321,6 @@ const documents: Document[] = [
       }
     ]
   },
-  // ... Adding 11 more similar documents with varied data
   {
     id: "7",
     name: "Q4_2023_MarketAnalysis.pdf",
@@ -376,7 +376,91 @@ export function FileRepository() {
     { id: "project", label: "Project", visible: false },
     { id: "portfolio", label: "Portfolio", visible: false },
   ]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   const { toast } = useToast();
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setColumns((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const toggleSelect = (docId: string, extractionIds: string[]) => {
+    const doc = documents.find(d => d.id === docId);
+    if (!doc) return;
+
+    const allDocExtractionIds = doc.extractions.map(e => e.id);
+    
+    setSelectedExtractions(prev => {
+      if (extractionIds.length === 0) {
+        // Unselect all extractions for this document
+        return prev.filter(id => !allDocExtractionIds.includes(id));
+      } else {
+        // Select all extractions for this document
+        const otherDocsExtractions = prev.filter(id => !allDocExtractionIds.includes(id));
+        return [...otherDocsExtractions, ...allDocExtractionIds];
+      }
+    });
+  };
+
+  const toggleExtraction = (extractionId: string, docId: string) => {
+    const doc = documents.find(d => d.id === docId);
+    if (!doc) return;
+
+    setSelectedExtractions(prev => {
+      const newSelection = new Set(prev);
+      if (prev.includes(extractionId)) {
+        newSelection.delete(extractionId);
+      } else {
+        newSelection.add(extractionId);
+      }
+      return Array.from(newSelection);
+    });
+  };
+
+  const toggleExpand = (id: string) => {
+    setExpandedRows((prev) =>
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkDownload = () => {
+    toast({
+      title: "Starting download",
+      description: `Downloading ${selectedDocs.length} documents`,
+    });
+  };
+
+  const handleBulkDelete = () => {
+    toast({
+      title: "Documents deleted",
+      description: `${selectedDocs.length} documents have been deleted`,
+      variant: "destructive",
+    });
+    setSelectedDocs([]);
+    setSelectedExtractions([]);
+  };
+
+  const toggleColumn = (columnId: string) => {
+    setColumns((prev) =>
+      prev.map((col) =>
+        col.id === columnId ? { ...col, visible: !col.visible } : col
+      )
+    );
+  };
 
   const filteredDocuments = documents.filter((doc) => {
     // Search filter
@@ -426,67 +510,10 @@ export function FileRepository() {
     return true;
   });
 
-  const toggleSelect = (docId: string, extractionIds: string[]) => {
-    setSelectedExtractions((prev) => {
-      const newSelection = new Set(prev);
-      extractionIds.forEach((extId) => {
-        if (prev.includes(extId)) {
-          newSelection.delete(extId);
-        } else {
-          newSelection.add(extId);
-        }
-      });
-      return Array.from(newSelection);
-    });
-  };
-
-  const toggleExtraction = (extractionId: string, docId: string) => {
-    setSelectedExtractions((prev) => {
-      const newSelection = new Set(prev);
-      if (prev.includes(extractionId)) {
-        newSelection.delete(extractionId);
-      } else {
-        newSelection.add(extractionId);
-      }
-      return Array.from(newSelection);
-    });
-  };
-
-  const toggleExpand = (id: string) => {
-    setExpandedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
-    );
-  };
-
-  const handleBulkDownload = () => {
-    toast({
-      title: "Starting download",
-      description: `Downloading ${selectedDocs.length} documents`,
-    });
-  };
-
-  const handleBulkDelete = () => {
-    toast({
-      title: "Documents deleted",
-      description: `${selectedDocs.length} documents have been deleted`,
-      variant: "destructive",
-    });
-    setSelectedDocs([]);
-    setSelectedExtractions([]);
-  };
-
-  const toggleColumn = (columnId: string) => {
-    setColumns((prev) =>
-      prev.map((col) =>
-        col.id === columnId ? { ...col, visible: !col.visible } : col
-      )
-    );
-  };
-
   return (
     <div className="w-full max-w-[1800px] mx-auto p-6 space-y-6 animate-fade-in">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">Document Repository</h1>
+        <h1 className="text-2xl font-semibold">File Repository</h1>
         <div className="flex gap-4">
           <GroupBySelect value={groupBy} onChange={setGroupBy} />
           <ColumnManager columns={columns} onColumnToggle={toggleColumn} />
@@ -505,17 +532,28 @@ export function FileRepository() {
         onSearchChange={setSearchTerm}
       />
 
-      <GroupedDocuments
-        documents={filteredDocuments}
-        groupBy={groupBy}
-        selectedDocs={selectedDocs}
-        selectedExtractions={selectedExtractions}
-        expandedRows={expandedRows}
-        visibleColumns={columns.filter(col => col.visible)}
-        onSelect={toggleSelect}
-        onSelectExtraction={toggleExtraction}
-        onExpand={toggleExpand}
-      />
+      <DndContext 
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext 
+          items={columns.map(col => col.id)}
+          strategy={horizontalListSortingStrategy}
+        >
+          <GroupedDocuments
+            documents={filteredDocuments}
+            groupBy={groupBy}
+            selectedDocs={selectedDocs}
+            selectedExtractions={selectedExtractions}
+            expandedRows={expandedRows}
+            visibleColumns={columns.filter(col => col.visible)}
+            onSelect={toggleSelect}
+            onSelectExtraction={toggleExtraction}
+            onExpand={toggleExpand}
+          />
+        </SortableContext>
+      </DndContext>
     </div>
   );
 }
