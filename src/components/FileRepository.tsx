@@ -4,6 +4,7 @@ import { FileRepositoryHeader } from "./file-repository/FileRepositoryHeader";
 import { FilterBar, type Filters } from "./file-repository/FilterBar";
 import { GroupedDocuments } from "./file-repository/GroupedDocuments";
 import { type Document, type ColumnConfig } from "./file-repository/types";
+import { GroupBySelect, type GroupByOption } from "./file-repository/GroupBySelect";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { filterDocuments } from "./file-repository/utils/documentUtils";
